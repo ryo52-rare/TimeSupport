@@ -1,0 +1,122 @@
+.ts-signup-page {
+    min-height: 100vh;
+    background-color: #6797FF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, "Noto sans JP", sans-serif;
+}
+
+.ts-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 32px;
+}
+
+.ts-logo {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 32px;
+}
+
+.ts-logo-img {
+    width: 120%;
+}
+
+.ts-title-band {
+    flex: 1;
+    background-color: #fff;
+    max-width: 1000px;
+    width: 100%;
+    padding: 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ts-title {
+    margin: 0;
+    font-size: 64px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: #000;
+}
+
+.ts-signup-main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.ts-signup-panel {
+    width: 100%;
+    max-width: 580px;
+}
+
+.ts-error-row {
+    height: 24px;
+    margin: 12px 0 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ts-error-message {
+    margin: 0;
+    color: #ff3b3b;
+    font-size: 14px;
+}
+
+.ts-signup-form {
+    width: 100%;
+}
+
+.ts-form-group {
+    background-color: #fff;
+    padding: 18px 22px;
+    margin-bottom: 18px;
+}
+
+.ts-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #0c0c0c;
+}
+
+.ts-input-signup {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 14px;
+    border: 1px solid #000;
+    box-sizing: border-box;
+}
+
+.ts-input-signup:focus {
+    outline: none;
+    border-color: #2d5bff;
+    box-shadow: 0 0 0 2px rgba(45, 91, 255, 0.2);
+}
+
+.ts-submit-button {
+    display: block;
+    margin: 28px auto 0;
+    width: 240px;
+    padding: 14px 0;
+    font-size: 20px;
+    font-weight: 600;
+    background-color: #0051FF;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}

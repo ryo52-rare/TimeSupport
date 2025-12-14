@@ -1,12 +1,14 @@
 import { useState } from "react";
-import "./LoginPage.css"
-import myPhoto from "../assets/office.jpg"
+import { useNavigate } from "react-router-dom";
+import "./LoginPage.css";
+import myPhoto from "../assets/office.jpg";
 import logo from '../assets/logo.png';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [hasError, setHasError] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,7 +16,7 @@ export default function LoginPage() {
   };
 
   const handleRegisterClick = () => {
-    console.log("新規登録ボタンクリック");
+    navigate("/signup");
   };
 
   return (
@@ -59,7 +61,7 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
-                className="ts-input"
+                className="ts-input-login"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -72,7 +74,7 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
-                className="ts-input"
+                className="ts-input-login"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -86,8 +88,10 @@ export default function LoginPage() {
           </form>
 
               <button
-              type="button"
-              className="ts-button ts-button-register">
+                type="button"
+                className="ts-button ts-button-register"
+                onClick={handleRegisterClick}
+              >
                 新規登録
               </button>
         </section>
