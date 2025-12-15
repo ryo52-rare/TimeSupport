@@ -1,6 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Login/LoginPage";
 import SignUp from "./SignUp/SignUp";
+import CourseSelect from "./CourseSelect/CourseSelect";
+
+function Dashboard() {
+  return <div style={{ padding: 40 }}>Dashboard</div>;
+}
 
 function App() {
   return (
@@ -8,6 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/course" element={<CourseSelect />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
