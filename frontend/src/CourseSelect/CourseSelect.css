@@ -1,0 +1,107 @@
+.ts-course-page {
+    min-height: 100vh;
+    background-color: #6797FF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, "Noto sans JP", sans-serif;
+}
+
+.ts-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 32px;
+}
+
+.ts-logo {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 32px;
+}
+
+.ts-logo-img {
+    width: 120%;
+}
+
+.ts-title-band {
+    flex: 1;
+    background-color: #fff;
+    max-width: 1000px;
+    width: 100%;
+    padding: 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ts-title {
+    margin: 0;
+    font-size: 64px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: #000;
+}
+
+.ts-course-main {
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.ts-course-cards {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin-top: 40px;
+}
+
+.ts-course-card {
+    width: 300px;
+    min-height: 300px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    padding: 18px 18px 22px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.ts-course-card:active {
+    transform: translateY(1px);
+}
+
+.ts-course-card-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ts-course-card-text {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.ts-text {
+    margin-top: 50px;
+    color: #fff;
+    font-size: 22px;
+    letter-spacing: 0.03em;
+}
+
+.ts-warning {
+    margin-top: 50px;
+    color: #ff2d2d;
+    font-size: 18px;
+    font-weight: 700;
+}
