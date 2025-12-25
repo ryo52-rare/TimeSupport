@@ -1,0 +1,146 @@
+.ts-dashboard-page {
+    min-height: 100vh;
+    background-color: #6797FF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, "Noto sans JP", sans-serif;
+}
+
+.ts-header {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 32px;
+}
+
+.ts-logo {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 32px;
+}
+
+.ts-header-right {
+    position: absolute;
+    right: -100px;
+    top: 58px;
+    transform: translateY(-50%);
+}
+
+.ts-logo-img {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    margin-right: 32px;
+}
+
+.ts-title-band {
+    flex: 1;
+    background-color: #fff;
+    max-width: 1000px;
+    width: 100%;
+    padding: 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ts-title {
+    margin: 0;
+    font-size: 64px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: #000;
+}
+
+.ts-user-btn {
+    width: 84px;
+    height: 84px;
+    border-radius: 999px;
+    background: #fff;
+    border: none;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.ts-user-icon {
+    width: 52px;
+    height: 52px;
+    display: block;
+}
+
+.ts-dashboard-main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.ts-dashboard-panel {
+    width: min(1100px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+.ts-panel {
+    width: 100%;
+    background-color: #fff;
+    padding: 18px 22px;
+    box-sizing: border-box;
+}
+
+.ts-panel--today {
+    max-width: 600px;
+    align-self: center;
+}
+
+.ts-panel--wide {
+    width: 100%;
+}
+
+.ts-dashboard-logout {
+    margin: 32px auto 0;
+    width: 240px;
+    padding: 14px 0;
+    font-size: 20px;
+    font-weight: 600;
+    background-color: #E32619;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
+@media (max-width: 720px) {
+    .ts-dashboard-page {
+        padding: 16px;
+    }
+
+    .ts-logo-img {
+        width: 64px;
+    }
+
+    .ts-user-btn {
+        width: 56px;
+        height: 56px;
+    }
+
+    .ts-user-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .ts-panel--today {
+        max-width: 100%;
+    }
+}

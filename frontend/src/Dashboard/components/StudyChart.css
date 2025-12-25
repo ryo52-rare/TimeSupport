@@ -1,0 +1,113 @@
+.study-chart {
+    background: #fff;
+    border: 3px solid #000;
+}
+
+.study-chart-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    border-bottom: 3px solid #000;
+}
+
+.study-chart-tabs {
+    display: flex;
+    gap: 14px;
+    padding: 12px;
+}
+
+.tab {
+    border: 3px solid #999;
+    background: #fff;
+    padding: 10px 18px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.tab.is-active {
+    border-color: #000;
+    background: #000;
+    color: #fff;
+}
+
+.study-chart-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.study-chart-spacer {
+    width: 90px;
+}
+
+.study-chart-body {
+    position: relative;
+    min-height: 420px;
+    padding: 18px 18px 22px;
+}
+
+.study-chart-body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 78px,
+        rgba(0,0,0,0.35) 79px,
+        rgba(0,0,0,0.35) 81px
+        );
+    pointer-events: none;
+}
+
+.chart-empty {
+    height: 360px;
+    display: grid;
+    place-items: center;
+    font-size: 28px;
+    font-weight: 900;
+    color: #777;
+    position: relative;
+    z-index: 1;
+}
+
+.chart {
+    height: 360px;
+    display: grid;
+    gap: 14px;
+    align-items: end;
+    position: relative;
+    z-index: 1;
+}
+
+.chart.day {
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.chart.week {
+    grid-template-columns: repeat(8, 1fr);
+}
+
+.chart.month {
+    grid-template-columns: repeat(12, 1fr);
+}
+
+.bar-wrap {
+    display: grid;
+    gap: 8px;
+    align-items: end;
+    justify-items: center;
+}
+
+.bar {
+    width: 100%;
+    border: 3px solid #000;
+    background: #fff;
+}
+
+.bar-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #111;
+}

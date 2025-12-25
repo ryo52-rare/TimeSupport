@@ -2,10 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./Login/LoginPage";
 import SignUp from "./SignUp/SignUp";
 import CourseSelect from "./CourseSelect/CourseSelect";
-
-function Dashboard() {
-  return <div style={{ padding: 40 }}>Dashboard</div>;
-}
+import Dashboard from "./Dashboard/Dashboard";
 
 function App() {
   return (
