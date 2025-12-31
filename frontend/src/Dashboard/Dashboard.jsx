@@ -10,146 +10,209 @@ import { minutesToHHMM, hhmmToMinutes, isoDate } from "../utils/time";
 import logo from "../assets/logo.png";
 import icon from "../assets/icon.png";
 
+const API_BASE = "http://localhost:8000";
+
+const API = {
+  monthLogs: (monthKey) => `/api/auth/study/logs/?month=${monthKey}`,
+  dayUpsert: (day) => `/api/auth/study/logs/${day}/`,
+};
+
+function getAccessToken() {
+  return localStorage.getItem("ts.auth.access");
+}
+
+async function apiFetch(path, options = {}) {
+  const token = getAccessToken();
+
+  const headers = {
+    ...(options.headers || {}),
+  };
+
+  if (options.body != null && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers,
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status}: ${text}`);
+  }
+
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
 export default function DashboardPage() {
-    const [todayMinutes, setTodayMinutes] = useState(0);
-    const [todayInput, setTodayInput] = useState("00:00");
-    const [calendarData, setCalendarData] = useState({});
-    const [summary, setSummary] = useState(null);
-    const [startKey, setStartKey] = useState(null);
+  const navigate = useNavigate();
 
-    const targetHours = useMemo(() => {
-        const t = localStorage.getItem("ts.course.target_hours");
-        return t ? Number(t) : null;
-    }, []);
+  const [todayInput, setTodayInput] = useState("00:00");
+  const [calendarData, setCalendarData] = useState({});
+  const [summary, setSummary] = useState(null);
+  const [startKey, setStartKey] = useState(null);
 
-    const today = useMemo(() => new Date(), []);
-    const todayKey = useMemo(() => isoDate(today), [today]);
+  const today = useMemo(() => new Date(), []);
+  const todayKey = useMemo(() => isoDate(today), [today]);
 
-    useEffect(() => {
-        const cal = localStorage.getItem("ts.study.calendar");
-        if (cal) setCalendarData(JSON.parse(cal));
+  const targetHours = useMemo(() => {
+    const course = localStorage.getItem("ts.course.target_hours");
+    return course ? Number(course) : null;
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const y = today.getFullYear();
+        const m = String(today.getMonth() + 1).padStart(2, "0");
+        const monthKey = `${y}-${m}`;
+
+        const logs = await apiFetch(API.monthLogs(monthKey));
+
+        const cal = {};
+        for (const row of logs ?? []) {
+          cal[row.date] = row.minutes;
+        }
+        setCalendarData(cal);
+
         const s = localStorage.getItem("ts.course.start_date");
         if (s) setStartKey(s);
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem("ts.study.calendar", JSON.stringify(calendarData));
-    }, [calendarData]);
-
-    useEffect(() => {
-        const mins = calendarData[todayKey];
-        if (typeof mins === "number") {
-            setTodayMinutes(mins);
-            setTodayInput(minutesToHHMM(mins));
+      } catch (e) {
+        if (String(e.message).includes("HTTP 401")) {
+          navigate("/", { replace: true });
         }
-    }, [calendarData, todayKey]);
+      }
+    })();
+  }, [navigate, today]);
 
-    useEffect(() => {
-        const keys = Object.keys(calendarData);
-        const now = new Date();
+  useEffect(() => {
+    const mins = calendarData[todayKey];
+    if (typeof mins === "number") {
+      setTodayInput(minutesToHHMM(mins));
+    } else {
+      setTodayInput("00:00");
+    }
+  }, [calendarData, todayKey]);
 
-        let weekTotal = 0;
-        let monthTotal = 0;
-        let monthDays = 0;
+  useEffect(() => {
+    const now = new Date();
+    let weekTotal = 0;
+    let monthTotal = 0;
+    let monthDays = 0;
 
-        keys.forEach((k) => {
-        const [y, m, d] = k.split("-").map(Number);
-        const date = new Date(y, m - 1, d);
-        const mins = calendarData[k] ?? 0;
-        const diff = Math.floor((now - date) / (24 * 60 * 60 * 1000));
+    Object.entries(calendarData).forEach(([k, mins]) => {
+      const [y, m, d] = k.split("-").map(Number);
+      const date = new Date(y, m - 1, d);
+      const diff = Math.floor((now - date) / (24 * 60 * 60 * 1000));
 
-        if (diff >= 0 && diff < 7) weekTotal += mins;
-        if (date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth()) {
-            monthTotal += mins;
-            monthDays += 1;
-        }
-        });
+      if (diff >= 0 && diff < 7) weekTotal += mins;
+      if (
+        date.getFullYear() === now.getFullYear() &&
+        date.getMonth() === now.getMonth()
+      ) {
+        monthTotal += mins;
+        monthDays += 1;
+      }
+    });
 
-        setSummary({
-            weekTotal,
-            monthTotal,
-            avgPerDay: monthDays ? Math.round(monthTotal / monthDays) : 0,
-        });
-    }, [calendarData]);
+    setSummary({
+      weekTotal,
+      monthTotal,
+      avgPerDay: monthDays ? Math.round(monthTotal / monthDays) : 0,
+    });
+  }, [calendarData]);
 
-    const handleRegister = () => {
-        const mins = hhmmToMinutes(todayInput);
-        if (mins === null) {
-            alert("時間の形式が正しくありません");
-        return;
-        }
-        if (!startKey) {
-            setStartKey(todayKey);
-            localStorage.setItem("ts.course.start_date", todayKey);
-        }
-        setTodayMinutes(mins);
-        setCalendarData((prev) => ({ ...prev, [todayKey]: mins }));
-    };
+  const handleRegister = async () => {
+    const mins = hhmmToMinutes(todayInput);
+    if (mins === null) {
+      alert("時間の形式が正しくありません");
+      return;
+    }
 
-    const chartData = useMemo(() => {
-        return Object.entries(calendarData)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .slice(-7)
-        .map(([date, minutes]) => ({ date, minutes }));
-    }, [calendarData]);
+    try {
+      await apiFetch(API.dayUpsert(todayKey), {
+        method: "PUT",
+        body: JSON.stringify({ minutes: mins }),
+      });
 
-    const navigate = useNavigate();
-    const handleLogout = () => {
-        localStorage.removeItem("ts.course.start_date");
-        localStorage.removeItem("ts.study.calendar");
-        navigate("/", { replace: true });
-    };
+      if (!startKey) {
+        setStartKey(todayKey);
+        localStorage.setItem("ts.course.start_date", todayKey);
+      }
 
-    return (
-        <div className="ts-dashboard-page">
-        <header className="ts-header">
-            <div className="ts-header-left">
-                <img src={logo} alt="logo" className="ts-logo-img" />
-            </div>
+      setCalendarData((prev) => ({ ...prev, [todayKey]: mins }));
+    } catch {
+      alert("登録に失敗しました");
+    }
+  };
 
-            <div className="ts-title-band">
-                <h1 className="ts-title">Time support</h1>
-            </div>
+  const handleLogout = () => {
+    localStorage.removeItem("ts.auth.access");
+    localStorage.removeItem("ts.auth.refresh");
+    navigate("/", { replace: true });
+  };
 
-            <div className="ts-header-right">
-                <button type="button" className="ts-user-btn">
-                    <img src={icon} alt="user" className="ts-user-icon" />
-                </button>
-            </div>
-        </header>
-
-        <main className="ts-dashboard-main">
-            <div className="ts-dashboard-panel">
-                <div className="ts-panel ts-panel--today">
-                    <TodayInput
-                        valueHHMM={minutesToHHMM(todayMinutes)}
-                        inputHHMM={todayInput}
-                        onInputChange={setTodayInput}
-                        onRegister={handleRegister}/>
-                </div>
-
-                <div className="ts-panel ts-panel--wide">
-                    <MonthlyCalendar data={calendarData} />
-                </div>
-
-                <div className="ts-panel ts-panel--wide">
-                    <SummaryCards
-                        summary={summary}
-                        calendarData={calendarData}
-                        todayKey={todayKey}
-                        targetHours={targetHours}
-                        startKey={startKey} />
-                </div>
-
-                <div className="ts-panel ts-panel--wide">
-                    <StudyChart data={chartData} />
-                </div>
-
-                <button className="ts-dashboard-logout" onClick={handleLogout}>
-                    ログアウト
-                </button>
-            </div>
-        </main>
+  return (
+    <div className="ts-dashboard-page">
+      <header className="ts-header">
+        <div className="ts-logo">
+          <img src={logo} alt="logo" className="ts-logo-img" />
         </div>
-    );
+
+        <div className="ts-title-band">
+          <h1 className="ts-title">Time support</h1>
+        </div>
+
+        <div className="ts-header-right">
+          <button
+            type="button"
+            className="ts-user-btn"
+            onClick={() => navigate("/setting")}
+          >
+            <img src={icon} alt="user" className="ts-user-icon" />
+          </button>
+        </div>
+      </header>
+
+      <main className="ts-dashboard-main">
+        <div className="ts-dashboard-panel">
+          <div className="ts-panel ts-panel--today">
+            <TodayInput
+              inputHHMM={todayInput}
+              onInputChange={setTodayInput}
+              onRegister={handleRegister}
+            />
+          </div>
+
+          <div className="ts-panel ts-panel--wide">
+            <MonthlyCalendar data={calendarData} />
+          </div>
+
+          <div className="ts-panel ts-panel--wide">
+            <SummaryCards
+              summary={summary}
+              calendarData={calendarData}
+              todayKey={todayKey}
+              startKey={startKey}
+              targetHours={targetHours}
+            />
+          </div>
+
+          <div className="ts-panel ts-panel--wide">
+            <StudyChart calendarData={calendarData} />
+          </div>
+
+          <button className="ts-dashboard-logout" onClick={handleLogout}>
+            ログアウト
+          </button>
+        </div>
+      </main>
+    </div>
+  );
 }

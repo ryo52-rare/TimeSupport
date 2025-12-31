@@ -1,7 +1,10 @@
-import { useState, } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
 import logo from "../assets/logo.png";
+
+const API_BASE = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+const REGISTER_URL = `${API_BASE}/api/auth/register/`;
 
 export default function SignUp() {
     const navigate = useNavigate();
@@ -12,7 +15,7 @@ export default function SignUp() {
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const trimmedName = name.trim();
@@ -43,9 +46,30 @@ export default function SignUp() {
         }
 
         setErrorMessage("");
-        console.log("send signup:", { name, email, password });
 
-        navigate("/course");
+        try {
+            const res = await fetch(REGISTER_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: trimmedName,
+                    email: trimmedEmail,
+                    password: trimmedPassword,
+                }),
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                setErrorMessage(`登録に失敗しました (HTTP ${res.status}) \n${text}`);
+                return;
+            }
+
+            navigate("/course");
+        } catch (e) {
+            setErrorMessage("登録に失敗しました");
+        }
     };
 
     return (

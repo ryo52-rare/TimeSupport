@@ -6,16 +6,16 @@ import logo from "../assets/logo.png";
 export default function CourseSelect() {
     const navigate = useNavigate();
     useEffect(() =>{
-        const done = localStorage.getItem("course_selected");
-        if(done === "true") {
+        const done = localStorage.getItem("ts.course.selected");
+        if(done) {
             navigate("/dashboard", {replace: true });
         }
     }, [navigate]);
 
     const handleSelect = useCallback(
         (course) => {
-            localStorage.setItem("selected_course", String(course));
-            localStorage.setItem("course_selected", "true");
+            localStorage.setItem("ts.course.selected", String(course));
+            localStorage.setItem("ts.course.target_hours", String(course));
             navigate("/dashboard", { replace: true });
         },[navigate]
     );
